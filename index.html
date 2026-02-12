@@ -3,392 +3,663 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manojshyaam C J | Engineering Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡️</text></svg>">
+    <title>Manojshyaam C J | Intelligent Systems Builder</title>
+    
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
     <style>
         :root {
-            --cursor-size: 8px;
-            --cursor-scale: 6;
-            --bg-color: #FDFBF5; /* Lite Beige */
-            --text-color: #2a2a2a;
-            --accent-color: #004D40; /* Deep Teal */
+            /* === MACHINE WORLD (The Void) === */
+            --bg-dark: #050505;
+            --text-main: #f2f2f2;
+            --text-muted: #666666;
+            --border-dark: rgba(255,255,255,0.1);
+            
+            /* === HUMAN WORLD (The Reality) === */
+            --bg-light: #EBE5CE; /* Architectural Beige */
+            --text-light-head: #0a0a0a;
+            --text-light-sub: #333333;
+            --border-light: rgba(0,0,0,0.08);
+            --accent-warm: #d97706; /* Amber for human touch */
+            
+            /* === FOOTER === */
+            --bg-footer: #0b1021; /* Midnight Blue */
+            
+            --font-display: 'Clash Display', sans-serif;
+            --font-body: 'Satoshi', sans-serif;
+            --font-sig: 'Mrs Saint Delafield', cursive;
         }
 
-        ::selection {
-            background: var(--accent-color);
-            color: var(--bg-color);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overscroll-behavior: none;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
             cursor: none;
         }
 
-        .font-serif {
-            font-family: 'Lora', serif;
-        }
-
-        /* Custom Cursor for Light Theme */
-        .cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--cursor-size);
-            height: var(--cursor-size);
-            background-color: var(--text-color);
-            border-radius: 50%;
+        /* --- 1. 3D CINEMATIC LAYER --- */
+        #webgl-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: #000; z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
             pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.2s cubic-bezier(0.165, 0.84, 0.44, 1), 
-                        width 0.2s cubic-bezier(0.165, 0.84, 0.44, 1), 
-                        height 0.2s cubic-bezier(0.165, 0.84, 0.44, 1),
-                        background-color 0.2s ease;
-        }
-
-        .cursor.hovered {
-            background-color: var(--accent-color);
-        }
-
-        /* Styling the scrollbar */
-        ::-webkit-scrollbar { display: none; }
-
-        /* Refined reveal animations */
-        .reveal-mask {
-            -webkit-clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal-mask.visible {
-            -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
         }
         
-        .fade-up {
+        .intro-title-wrapper {
+            position: absolute; z-index: 10001; opacity: 0;
+            text-align: center;
+        }
+
+        .intro-name {
+            font-family: var(--font-display); font-weight: 700; font-size: 5vw;
+            color: #fff; letter-spacing: 0.15em; text-transform: uppercase;
+            mix-blend-mode: overlay; text-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        /* --- LAYOUT --- */
+        .world-container { position: relative; width: 100%; min-height: 100vh; opacity: 0; }
+        .layout-grid { padding: 0 5vw; max-width: 1800px; margin: 0 auto; }
+        section { padding: 120px 0; border-bottom: 1px solid var(--border-dark); position: relative; }
+
+        /* --- LAYERS --- */
+        .layer-machine { background: var(--bg-dark); position: relative; z-index: 1; }
+        
+        .layer-human { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-light); color: var(--text-light-head);
+            z-index: 2; pointer-events: none; 
+            clip-path: circle(0px at 0 0); will-change: clip-path;
+        }
+        .layer-human section { border-bottom: 1px solid var(--border-light); }
+
+        /* --- TYPOGRAPHY --- */
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3.5rem, 9vw, 11rem);
+            font-weight: 600; line-height: 0.9; text-transform: uppercase;
+            letter-spacing: -0.03em; margin-bottom: 40px; color: #fff;
+        }
+        
+        .layer-human .hero-title { color: transparent; -webkit-text-stroke: 1.5px #1a1a1a; }
+
+        .domain-list {
+            display: flex; flex-wrap: wrap; gap: 15px 30px;
+            font-family: var(--font-body); font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-muted); margin-bottom: 3rem;
+        }
+        .layer-human .domain-list { color: var(--text-light-sub); font-weight: 600; }
+        .domain-item::before { content: '•'; margin-right: 10px; color: var(--text-main); }
+        .layer-human .domain-item::before { color: #000; }
+        .mysterious { color: #fff; opacity: 1; }
+        .layer-human .mysterious { color: var(--accent-warm); font-style: italic; }
+
+        .section-head {
+            font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+            margin-bottom: 50px; opacity: 0.5; display: flex; align-items: center; gap: 15px;
+        }
+        .section-head::before { content: ''; width: 30px; height: 1px; background: currentColor; }
+
+        /* --- NAV --- */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 30px 5vw; display: flex; justify-content: space-between;
+            align-items: center; z-index: 100; mix-blend-mode: exclusion;
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .fade-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .nav-logo { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 1.1rem; color: #fff; }
+        .nav-links a { text-decoration: none; color: #fff; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.15em; margin-left: 30px; opacity: 0.7; transition: opacity 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        /* --- CARDS --- */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         
-        /* Glass card for light theme */
-        .light-glass-card {
-            background-color: rgba(255, 255, 255, 0.5);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(42, 42, 42, 0.08);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        .info-card {
+            padding: 40px; border: 1px solid var(--border-dark);
+            background: rgba(255,255,255,0.02); display: flex; gap: 25px;
+            align-items: flex-start; transition: 0.3s;
         }
-        .light-glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px -15px rgba(42, 42, 42, 0.1);
+        .layer-human .info-card { border-color: var(--border-light); background: rgba(0,0,0,0.03); }
+
+        .logo-box {
+            width: 60px; height: 60px; background: #fff; border-radius: 4px;
+            display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+            overflow: hidden; padding: 8px; border: 1px solid #333;
+        }
+        .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+        /* Robust Fallback */
+        .fallback-text { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: #000; display: none; text-align: center; line-height: 1; }
+
+        .card-content h3 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 5px; font-weight: 500; }
+        .card-content h4 { font-size: 0.95rem; opacity: 0.7; margin-bottom: 10px; font-weight: 400; }
+        .meta-tag { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.5; margin-top: 5px; display: block; font-family: var(--font-body); }
+
+        /* --- PROJECTS --- */
+        .project-row {
+            display: grid; grid-template-columns: 0.5fr 3fr 1fr;
+            padding: 40px 0; border-top: 1px solid var(--border-dark);
+            align-items: center; transition: 0.3s;
+        }
+        .layer-human .project-row { border-top-color: var(--border-light); }
+        .p-idx { font-family: var(--font-display); opacity: 0.3; }
+        .p-title { font-family: var(--font-display); font-size: 2rem; font-weight: 500;}
+        .p-desc { text-align: right; opacity: 0.6; font-size: 0.9rem; letter-spacing: 0.02em; }
+        .layer-human .p-title { color: #000; }
+        
+        .patent-badge {
+            display: inline-block; padding: 3px 10px; border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50px; font-size: 0.6rem; text-transform: uppercase;
+            letter-spacing: 0.1em; margin-left: 15px; vertical-align: middle;
+        }
+        .layer-human .patent-badge { border-color: #000; color: #000; }
+
+        /* --- AWARDS --- */
+        .award-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .award-card { padding: 30px; border: 1px solid var(--border-dark); display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.01); }
+        .layer-human .award-card { border-color: var(--border-light); background: rgba(0,0,0,0.03); }
+        .award-logo-box { width: 50px; height: 50px; background: #fff; border-radius: 4px; display: flex; justify-content: center; align-items: center; padding: 5px; flex-shrink: 0; }
+        .award-logo-box img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* --- SKILLS --- */
+        .skill-tag { display: inline-block; padding: 8px 16px; border: 1px solid var(--border-dark); font-size: 0.85rem; margin: 0 8px 8px 0; opacity: 0.7; letter-spacing: 0.05em; }
+        .layer-human .skill-tag { border-color: var(--border-light); color: #000; opacity: 1; }
+
+        /* --- MIDNIGHT BLUEPRINT FOOTER --- */
+        .tesla-footer { 
+            background: var(--bg-footer); /* #0b1021 */
+            padding: 150px 5vw 80px; position: relative; text-align: center; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.1); 
+        }
+        .blueprint { 
+            position: absolute; inset: 0; 
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); 
+            background-size: 60px 60px; pointer-events: none; 
+        }
+        .tesla-quote { font-family: var(--font-display); font-size: 2rem; color: #a0aab5; max-width: 800px; margin: 0 auto 40px; position: relative; line-height: 1.4; }
+        .tesla-sig { font-family: var(--font-sig); font-size: 4rem; color: #fff; transform: rotate(-5deg); opacity: 0.8; }
+        .contact-btn { 
+            margin-top: 60px; display: inline-block; padding: 20px 50px; 
+            border: 1px solid rgba(255,255,255,0.2); color: #fff; 
+            text-decoration: none; text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.8rem;
+            font-family: var(--font-body); position: relative; z-index: 10; transition: 0.4s; 
+        }
+        .contact-btn:hover { background: #fff; color: #0b1021; }
+
+        /* --- CURSOR --- */
+        .cursor-ring { 
+            position: fixed; width: 20px; height: 20px; 
+            background: #fff; border-radius: 50%; 
+            pointer-events: none; transform: translate(-50%, -50%); z-index: 9999; 
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s, opacity 0.3s; 
         }
 
-        /* Animated Doodle Background */
-        .doodle-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
+        /* --- MOBILE --- */
+        @media (max-width: 900px) {
+            .cursor-ring, .layer-human { display: none !important; }
+            body { cursor: auto; }
+            .grid-2, .award-grid { grid-template-columns: 1fr; }
+            .project-row { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+            .p-idx { display: none; }
+            .p-desc { text-align: left; opacity: 0.7; }
+            .patent-badge { margin-left: 0; margin-top: 5px; display: inline-block;}
+            .hero-title { font-size: 14vw; margin-bottom: 20px; }
+            .intro-name { font-size: 8vw; }
+            nav { padding: 20px; }
+            .nav-links { display: none; }
+            section { padding: 80px 0; }
+            .info-card { padding: 25px; flex-direction: column; }
         }
-        .doodle-background svg {
-            width: 100%;
-            height: 100%;
-            opacity: 0.5;
-        }
-        .doodle-path {
-            stroke: rgba(42, 42, 42, 0.1);
-            stroke-width: 1;
-            fill: none;
-            animation: drift 60s linear infinite alternate;
-        }
-        .doodle-path:nth-child(2) { animation-duration: 55s; animation-delay: -10s; }
-        .doodle-path:nth-child(3) { animation-duration: 65s; animation-delay: -5s; }
-
-        @keyframes drift {
-            from { transform: translateX(-5%) translateY(-5%) rotate(0deg); }
-            to { transform: translateX(5%) translateY(5%) rotate(15deg); }
-        }
-
     </style>
 </head>
-<body class="antialiased">
-    <div class="cursor"></div>
-    <div class="doodle-background">
-        <svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 100 100">
-            <path class="doodle-path" d="M-10,10 C 20,40 40,20 70,50 S 90,80 110,70"></path>
-            <path class="doodle-path" d="M-10,50 C 30,10 50,60 80,20 S 90,70 110,60"></path>
-            <path class="doodle-path" d="M-10,90 C 25,70 45,95 75,60 S 95,100 110,90"></path>
-        </svg>
-    </div>
+<body>
 
-    <!-- Main container for smooth scrolling -->
-    <div id="main-container">
-        <div class="max-w-7xl mx-auto px-6 md:px-12">
-
-            <!-- HERO SECTION -->
-            <header class="min-h-screen flex items-center py-24">
-                <div class="grid md:grid-cols-5 gap-12 items-center">
-                    <div class="md:col-span-3">
-                        <div class="reveal-mask">
-                            <h1 class="font-serif text-6xl md:text-8xl font-bold leading-none">Manojshyaam C J</h1>
-                        </div>
-                        <div class="reveal-mask" style="transition-delay: 150ms;">
-                            <p class="text-xl md:text-2xl mt-6 text-neutral-600">
-                                At <strong class="text-black">IIT Madras</strong>, under the guidance of <strong class="text-black">Prof. Babji Srinivasan</strong>, I build at the frontier of intelligence—crafting systems where the digital and physical worlds become one.
-                            </p>
-                        </div>
-                        <div class="mt-10 flex space-x-6 fade-up" style="transition-delay: 300ms;">
-                             <a href="https://in.linkedin.com/in/manojshyaam-c-j-3110jaijeys" target="_blank" class="text-neutral-500 hover:text-[var(--accent-color)] transition-colors" data-magnetic>LinkedIn</a>
-                             <a href="mailto:am24s55@smail.iitm.ac.in" class="text-neutral-500 hover:text-[var(--accent-color)] transition-colors" data-magnetic>Email</a>
-                        </div>
-                    </div>
-                    <div class="md:col-span-2 flex justify-center fade-up" style="transition-delay: 200ms;">
-                        <!-- HOW TO ADD YOUR PHOTO: Replace the link below with the path to your image. Example: "images/manojshyaam.jpg" -->
-                        <img data-magnetic src="images/manoj.jpg" class="rounded-2xl w-full h-auto object-cover border border-neutral-200 shadow-xl">
-                    </div>
-                </div>
-            </header>
-            
-            <!-- QUOTE SECTION -->
-            <section class="py-24 md:py-32 text-center">
-                <div class="fade-up">
-                    <h2 class="font-serif text-3xl md:text-4xl max-w-4xl mx-auto leading-snug">"It always seems impossible until it's done."</h2>
-                </div>
-            </section>
-
-            <!-- PROJECTS SECTION -->
-            <main class="py-24 md:py-40 border-t border-neutral-200">
-                <div class="text-center mb-24">
-                    <h2 class="font-serif text-5xl font-bold fade-up">Selected Works</h2>
-                    <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto fade-up" style="transition-delay: 100ms;">A collection of inventions at the intersection of hardware, AI, and human experience.</p>
-                </div>
-                
-                <!-- Project 1 -->
-                <section class="grid md:grid-cols-2 gap-12 items-center mb-32">
-                    <div class="rounded-2xl overflow-hidden fade-up">
-                        <!-- HOW TO ADD PROJECT IMAGE: Replace placeholder with your image path. Example: "images/vytal.jpg" -->
-                        <img src="images/Vytal(2).png" alt="Vytal Project" class="w-full h-auto" style="transform: scale(1.05);">
-                    </div>
-                    <div class="fade-up" style="transition-delay: 150ms;">
-                        <span class="text-sm font-semibold tracking-widest uppercase text-[var(--accent-color)]">01 / Patented</span>
-                        <h3 class="font-serif text-4xl font-bold mt-4 mb-5">Vytal: Non-Contact Vitals Monitor</h3>
-                        <p class="text-neutral-600 text-lg leading-relaxed">Instead of intrusive wearables, Vytal offers a seamless way to monitor well-being. It’s ambient technology that uses radar and edge AI to create healthier, more intuitive environments.</p>
-                        <div class="mt-6 text-sm font-medium text-neutral-500 space-x-4"><span>mmWave Radar</span><span>&bull;</span><span>Edge AI</span><span>&bull;</span><span>Health-Tech</span></div>
-                    </div>
-                </section>
-
-                <!-- Project 2 -->
-                 <section class="grid md:grid-cols-2 gap-12 items-center mb-32">
-                    <div class="fade-up md:order-2" style="transition-delay: 150ms;">
-                        <span class="text-sm font-semibold tracking-widest uppercase text-[var(--accent-color)]">02 / Research</span>
-                        <h3 class="font-serif text-4xl font-bold mt-4 mb-5">Continuous Thought Machine</h3>
-                        <p class="text-neutral-600 text-lg leading-relaxed">Questioning the fundamentals of machine thought. This project moves beyond conventional, clock-based processing to create an AI with a continuous, fluid reasoning process—closer to how we think.</p>
-                        <div class="mt-6 text-sm font-medium text-neutral-500 space-x-4"><span>Neural Synchronization</span><span>&bull;</span><span>Edge AI</span><span>&bull;</span><span>Cognitive AI</span></div>
-                    </div>
-                    <div class="rounded-2xl overflow-hidden fade-up md:order-1">
-                         <!-- HOW TO ADD PROJECT IMAGE: Replace placeholder with your image path. Example: "images/thought-machine.jpg" -->
-                        <img src="https://placehold.co/1000x800/2a2a2a/FDFBF5?text=Neural+Sync" alt="Continuous Thought Machine" class="w-full h-auto" style="transform: scale(1.05);">
-                    </div>
-                </section>
-                
-                <!-- Project 3 -->
-                <section class="grid md:grid-cols-2 gap-12 items-center mb-32">
-                    <div class="rounded-2xl overflow-hidden fade-up">
-                         <!-- HOW TO ADD PROJECT IMAGE: Replace placeholder with your image path. Example: "images/gaze.jpg" -->
-                        <img src="https://placehold.co/1000x800/2a2a2a/FDFBF5?text=Gaze+UI" alt="Gaze-Enabled Intelligence" class="w-full h-auto" style="transform: scale(1.05);">
-                    </div>
-                    <div class="fade-up" style="transition-delay: 150ms;">
-                        <span class="text-sm font-semibold tracking-widest uppercase text-[var(--accent-color)]">03 / Patented</span>
-                        <h3 class="font-serif text-4xl font-bold mt-4 mb-5">Gaze-Enabled Intelligence</h3>
-                        <p class="text-neutral-600 text-lg leading-relaxed">The most natural user interface is no interface at all. This patented technology allows for seamless device interaction through gaze and speech, dissolving the barrier between human intent and machine action.</p>
-                         <div class="mt-6 text-sm font-medium text-neutral-500 space-x-4"><span>Computer Vision</span><span>&bull;</span><span>NLP</span><span>&bull;</span><span>HCI</span></div>
-                    </div>
-                </section>
-            </main>
-            
-            <!-- TOOLKIT SECTION -->
-            <section class="py-24 md:py-40 border-t border-neutral-200">
-                <div class="text-center">
-                    <h2 class="font-serif text-5xl font-bold fade-up">My Toolkit</h2>
-                    <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto fade-up" style="transition-delay: 100ms;">The technologies I use to turn ambitious ideas into reality.</p>
-                </div>
-                <div class="grid md:grid-cols-3 gap-8 mt-20 text-center">
-                    <div class="fade-up p-8 rounded-2xl light-glass-card">
-                        <h3 class="font-serif text-2xl font-semibold mb-6">Core Expertise</h3>
-                        <ul class="space-y-2 text-neutral-600 leading-relaxed">
-                            <li>Edge AI & TinyML</li>
-                            <li>Computer & Radar Vision</li>
-                            <li>Python, C++, MATLAB</li>
-                            <li>Linux Environment</li>
-                            <li>Motorsolve & MAGNET-Siemens</li>
-                        </ul>
-                    </div>
-                     <div class="fade-up p-8 rounded-2xl light-glass-card" style="transition-delay: 150ms;">
-                        <h3 class="font-serif text-2xl font-semibold mb-6">Expanding Into</h3>
-                         <ul class="space-y-2 text-neutral-600 leading-relaxed">
-                            <li>Rust</li>
-                            <li>IoT Protocols (Thread, Matter)</li>
-                            <li>Connectivity (USB, Wi-Fi)</li>
-                            <li>Altium Designer</li>
-                        </ul>
-                    </div>
-                     <div class="fade-up p-8 rounded-2xl light-glass-card" style="transition-delay: 300ms;">
-                         <h3 class="font-serif text-2xl font-semibold mb-6">Communication</h3>
-                         <ul class="space-y-2 text-neutral-600 leading-relaxed">
-                            <li>SPI & I2C</li>
-                            <li>BLE & Bluetooth</li>
-                            <li>MQTT</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- ACCOLADES -->
-            <section class="py-24 md:py-40">
-                <div class="text-center mb-24">
-                    <h2 class="font-serif text-5xl font-bold fade-up">Recognition</h2>
-                    <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto fade-up" style="transition-delay: 100ms;">A few highlights from my journey so far.</p>
-                </div>
-                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <div class="light-glass-card p-6 rounded-2xl text-center fade-up" data-magnetic><h3 class="font-bold text-lg">Int'l Hackathon Winner</h3><p class="text-sm text-neutral-600 mt-1">1st at YESIST'12 by IEEE</p></div>
-                    <div class="light-glass-card p-6 rounded-2xl text-center fade-up" style="transition-delay: 100ms;" data-magnetic><h3 class="font-bold text-lg">ETH Zurich Award</h3><p class="text-sm text-neutral-600 mt-1">Won Google Coral Dev Board</p></div>
-                    <div class="light-glass-card p-6 rounded-2xl text-center fade-up" style="transition-delay: 200ms;" data-magnetic><h3 class="font-bold text-lg">Innovation Fair '24</h3><p class="text-sm text-neutral-600 mt-1">$500 Prize from STMicro</p></div>
-                    <div class="light-glass-card p-6 rounded-2xl text-center fade-up" style="transition-delay: 300ms;" data-magnetic><h3 class="font-bold text-lg">India Book of Records</h3><p class="text-sm text-neutral-600 mt-1">Largest origami military tank</p></div>
-                </div>
-            </section>
-
-            <!-- FOOTER -->
-            <footer class="text-center py-24 border-t border-neutral-200">
-                <div class="fade-up">
-                    <h2 class="font-serif text-5xl font-bold mb-5">Have an idea that pushes the boundaries?</h2>
-                    <p class="text-lg text-neutral-600 max-w-xl mx-auto mb-10">I'm always open to discussing new ideas, collaborations, or opportunities. Let's create something remarkable.</p>
-                    <a href="mailto:am24s55@smail.iitm.ac.in" class="inline-block bg-[var(--accent-color)] text-white font-bold py-4 px-10 rounded-full hover:bg-[#00382D] transition-all duration-300 transform hover:scale-105 text-lg" data-magnetic>
-                        Start a Conversation
-                    </a>
-                    <p class="text-neutral-400 text-sm mt-24">© 2024 Manojshyaam C J. Designed with intention.</p>
-                </div>
-            </footer>
+    <div id="webgl-container">
+        <div class="intro-title-wrapper">
+            <h1 class="intro-name">MANOJSHYAAM C J</h1>
         </div>
     </div>
 
-    <script>
-    window.onload = function () {
-        // --- Custom Cursor & Magnetic Elements ---
-        const cursor = document.querySelector('.cursor');
-        const magneticElements = document.querySelectorAll('[data-magnetic]');
-        let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
+    <nav>
+        <div class="nav-logo">Manojshyaam C J</div>
+        <div class="nav-links">
+            <a href="#about">Profile</a>
+            <a href="#projects">Systems</a>
+            <a href="#awards">Honors</a>
+        </div>
+    </nav>
 
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+    <div class="cursor-ring"></div>
 
-        function animateCursor() {
-            cursorX += (mouseX - cursorX) * 0.12;
-            cursorY += (mouseY - cursorY) * 0.12;
-            cursor.style.transform = `translate3d(${cursorX - (cursor.offsetWidth / 2)}px, ${cursorY - (cursor.offsetHeight / 2)}px, 0)`;
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor();
-
-        magneticElements.forEach(el => {
-            let rect = el.getBoundingClientRect();
-            
-            el.addEventListener('mouseenter', () => {
-                cursor.style.transform = `translate3d(${cursorX - (cursor.offsetWidth / 2)}px, ${cursorY - (cursor.offsetHeight / 2)}px, 0) scale(${getComputedStyle(document.documentElement).getPropertyValue('--cursor-scale')})`;
-                cursor.classList.add('hovered');
-            });
-
-            el.addEventListener('mousemove', (e) => {
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                el.style.transform = `translate(${(x - rect.width / 2) * 0.1}px, ${(y - rect.height / 2) * 0.1}px)`;
-            });
-
-            el.addEventListener('mouseleave', () => {
-                el.style.transform = 'translate(0, 0)';
-                cursor.style.transform = `translate3d(${cursorX - (cursor.offsetWidth / 2)}px, ${cursorY - (cursor.offsetHeight / 2)}px, 0) scale(1)`;
-                cursor.classList.remove('hovered');
-            });
-            
-            new ResizeObserver(() => { rect = el.getBoundingClientRect(); }).observe(el);
-        });
-
-        // --- Smooth Scrolling ---
-        if (window.innerWidth > 1024) {
-            let scrollY = window.pageYOffset;
-            let targetScrollY = scrollY;
-
-            function smoothScroll() {
-                targetScrollY = window.pageYOffset;
-                scrollY += (targetScrollY - scrollY) * 0.09;
+    <div class="world-container">
+        
+        <div class="layer-machine">
+            <div class="layout-grid">
                 
-                document.querySelector('#main-container').style.transform = `translate3d(0, -${scrollY.toFixed(2)}px, 0)`;
+                <section class="hero">
+                    <div style="height: 20vh;"></div>
+                    <div style="opacity: 0.4; letter-spacing: 0.2em; margin-bottom: 2rem; font-size: 0.8rem; text-transform: uppercase;">Portfolio '26</div>
+                    <h1 class="hero-title">
+                        Intelligent<br>
+                        Systems<br>
+                        Builder
+                    </h1>
+                    <div class="domain-list">
+                        <div class="domain-item">Neuromorphic Systems</div>
+                        <div class="domain-item">Edge AI</div>
+                        <div class="domain-item">Neuro-Symbolic</div>
+                        <div class="domain-item">Human Ensembled</div>
+                        <div class="domain-item mysterious">Mysterious Engineering</div>
+                    </div>
+                </section>
 
-                requestAnimationFrame(smoothScroll);
+                <section id="about">
+                    <div class="section-head">Experience & Education</div>
+                    <div class="grid-2">
+                        <div class="info-card">
+                            <div class="logo-box">
+                                <img src="https://upload.wikimedia.org/wikipedia/en/2/23/DRDO_Seal.png" alt="DRDO" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                                <div class="fallback-text">DRDO</div>
+                            </div>
+                            <div class="card-content">
+                                <h3>DRDO</h3>
+                                <h4>Project Intern (Research)</h4>
+                                <span class="meta-tag">Axial Flux BLDC Design • 2023</span>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="logo-box">
+                                <img src="https://upload.wikimedia.org/wikipedia/en/6/69/IIT_Madras_Logo.svg" alt="IITM" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                                <div class="fallback-text">IITM</div>
+                            </div>
+                            <div class="card-content">
+                                <h3>IIT Madras</h3>
+                                <h4>MS, Applied Mechanics</h4>
+                                <span class="meta-tag">CGPA: 8.25 • 2024-2026</span>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="logo-box">
+                                <img src="https://upload.wikimedia.org/wikipedia/en/8/8f/SSN_College_of_Engineering_Logo.png" alt="SSN" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                                <div class="fallback-text">SSN</div>
+                            </div>
+                            <div class="card-content">
+                                <h3>SSN College</h3>
+                                <h4>BE, EEE</h4>
+                                <span class="meta-tag">CGPA: 8.5 • 2020-2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="projects">
+                    <div class="section-head">Patents & Systems</div>
+                    <div class="project-row">
+                        <div class="p-idx">01</div>
+                        <div class="p-title">Vytal Monitor <span class="patent-badge">Patented</span></div>
+                        <div class="p-desc">mmWave Radar • Signal Processing</div>
+                    </div>
+                    <div class="project-row">
+                        <div class="p-idx">02</div>
+                        <div class="p-title">Compact Gen <span class="patent-badge">Patented</span></div>
+                        <div class="p-desc">Static Converter • Axial Flux</div>
+                    </div>
+                    <div class="project-row">
+                        <div class="p-idx">03</div>
+                        <div class="p-title">Gaze Intelligence <span class="patent-badge">Patented</span></div>
+                        <div class="p-desc">Embedded NLP • Computer Vision</div>
+                    </div>
+                    <div class="project-row">
+                        <div class="p-idx">04</div>
+                        <div class="p-title">H-NeSy</div>
+                        <div class="p-desc">Neuro-Symbolic AI • Research</div>
+                    </div>
+                    <div class="project-row">
+                        <div class="p-idx">05</div>
+                        <div class="p-title">Continuous Thought</div>
+                        <div class="p-desc">Clock-Independent • Python</div>
+                    </div>
+                     <div class="project-row">
+                        <div class="p-idx">06</div>
+                        <div class="p-title">EleCam</div>
+                        <div class="p-desc">Wildlife Alert • Govt Project</div>
+                    </div>
+                </section>
+
+                <section id="awards">
+                    <div class="section-head">Recognition</div>
+                    <div class="award-grid">
+                        <div class="award-card">
+                            <div class="award-logo-box"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/IEEE_logo.svg" alt="IEEE"><div class="fallback-text">IEEE</div></div>
+                            <div><h3>YESIST'12 Winner</h3><p class="meta-tag">1st Prize Prelims</p></div>
+                        </div>
+                        <div class="award-card">
+                            <div class="award-logo-box"><img src="https://upload.wikimedia.org/wikipedia/commons/9/99/ETH_Z%C3%BCrich_Logo_black.svg" alt="ETH"><div class="fallback-text">ETH</div></div>
+                            <div><h3>ETH Zurich Hack</h3><p class="meta-tag">Won Google Coral Board</p></div>
+                        </div>
+                        <div class="award-card">
+                            <div class="award-logo-box"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/STMicroelectronics_logo.svg" alt="ST" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"><div class="fallback-text" style="display:block; font-family:sans-serif; font-weight:700;">ST</div></div>
+                            <div><h3>Innovation Fair</h3><p class="meta-tag">Won $500 • Cough Sensei</p></div>
+                        </div>
+                        <div class="award-card">
+                             <div class="award-logo-box"><span style="color:#000; font-weight:700;">TV</span></div>
+                            <div><h3>Vasanth TV</h3><p class="meta-tag">Featured Invention</p></div>
+                        </div>
+                         <div class="award-card">
+                             <div class="award-logo-box"><span style="color:#000; font-weight:700;">IBR</span></div>
+                            <div><h3>India Book of Records</h3><p class="meta-tag">Largest Origami Tank</p></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="section-head">Technical Proficiency</div>
+                    <div class="skill-tag">Edge AI</div>
+                    <div class="skill-tag">TinyML</div>
+                    <div class="skill-tag">Neuromorphic</div>
+                    <div class="skill-tag">Computer Vision</div>
+                    <div class="skill-tag">Radar Vision</div>
+                    <div class="skill-tag">Linux</div>
+                    <div class="skill-tag">MATLAB</div>
+                    <div class="skill-tag">Python</div>
+                    <div class="skill-tag">C++</div>
+                    <div class="skill-tag">Motorsolve</div>
+                    <div class="skill-tag">MAGNET-Siemens</div>
+                </section>
+
+            </div>
+        </div>
+
+        <div class="layer-human">
+            <div class="layout-grid">
+                
+                <section class="hero">
+                    <div style="height: 20vh;"></div>
+                    <div style="opacity: 0.8; letter-spacing: 0.2em; margin-bottom: 2rem; font-size: 0.8rem; text-transform: uppercase; color: #000;">Intuitive Systems Architect</div>
+                    <h1 class="hero-title">
+                        Intuitive<br>
+                        Systems<br>
+                        Architect
+                    </h1>
+                    <div class="domain-list">
+                        <div class="domain-item">Bio-Inspired</div>
+                        <div class="domain-item">Privacy First</div>
+                        <div class="domain-item">Reasoning</div>
+                        <div class="domain-item">Collaborative</div>
+                        <div class="domain-item mysterious">Solving the Unknown</div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="section-head" style="color:#000;">Service & Leadership</div>
+                    <div class="grid-2">
+                        <div class="info-card">
+                            <div class="logo-box" style="border:1px solid #000;"><span style="color:#000; font-weight:700;">R</span></div>
+                            <div class="card-content">
+                                <h3>Research Intern</h3>
+                                <h4>Defence Application</h4>
+                                <span class="meta-tag" style="color:#000;">Aircraft Power Systems</span>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="logo-box" style="border:1px solid #000;"><span style="color:#000; font-weight:700;">L</span></div>
+                            <div class="card-content">
+                                <h3>Project Head (Vytal)</h3>
+                                <h4>Center for Innovation</h4>
+                                <span class="meta-tag" style="color:#000;">Leading teams to solve health problems</span>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                             <div class="logo-box" style="border:1px solid #000;"><span style="color:#000; font-weight:700;">V</span></div>
+                            <div class="card-content">
+                                <h3>Volunteer</h3>
+                                <h4>YRC & Sports Secretary</h4>
+                                <span class="meta-tag" style="color:#000;">80+ Hours Service • Black Belt</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                 <section>
+                    <div class="section-head" style="color:#000;">Human Impact</div>
+                    <div class="project-row">
+                        <div class="p-idx">01</div>
+                        <div class="p-title">Workplace Wellness</div>
+                        <div class="p-desc">Reducing stress • Non-invasive</div>
+                    </div>
+                    <div class="project-row">
+                        <div class="p-idx">02</div>
+                        <div class="p-title">Efficient Power</div>
+                        <div class="p-desc">Small scale energy solutions</div>
+                    </div>
+                    <div class="project-row">
+                        <div class="p-idx">03</div>
+                        <div class="p-title">Accessibility</div>
+                        <div class="p-desc">Hands-free control for disabled</div>
+                    </div>
+                    <div class="project-row">
+                        <div class="p-idx">04</div>
+                        <div class="p-title">Artificial Intuition</div>
+                        <div class="p-desc">Safety & Efficiency in warehouses</div>
+                    </div>
+                     <div class="project-row">
+                        <div class="p-idx">05</div>
+                        <div class="p-title">Cognitive AI</div>
+                        <div class="p-desc">Reasoning like a brain</div>
+                    </div>
+                     <div class="project-row">
+                        <div class="p-idx">06</div>
+                        <div class="p-title">Wildlife Safety</div>
+                        <div class="p-desc">Protecting villages & elephants</div>
+                    </div>
+                </section>
+
+                <section id="awards-human">
+                    <div class="section-head" style="color:#000;">Global Recognition</div>
+                    <div class="grid-2">
+                        <div class="info-card" style="border:none;">
+                            <h3 style="font-size:3rem; color: var(--accent-warm);">10+</h3>
+                            <span>Technical Prizes Won</span>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="tesla-footer" id="contact">
+        <div class="blueprint"></div>
+        <div class="tesla-quote">
+            “The present is theirs; the future, for which I really worked, is mine.”
+        </div>
+        <div class="tesla-sig">Nikola Tesla</div>
+        <br>
+        <a href="mailto:am24s055@smail.iitm.ac.in" class="contact-btn">am24s055@smail.iitm.ac.in</a>
+        <div style="margin-top: 50px; color: #a0aab5; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;">
+            Chennai, India
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. INTERSTELLAR MONOLITH TUNNEL ---
+        const initInterstellarWarp = () => {
+            if(window.innerWidth < 900) {
+                // Mobile skip
+                document.getElementById('webgl-container').style.display = 'none';
+                gsap.to('nav', { opacity: 1, delay: 0.5 });
+                gsap.to('.world-container', { opacity: 1, delay: 0.5 });
+                return;
             }
+
+            const container = document.getElementById('webgl-container');
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.05); // Deep fog
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 20;
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.toneMapping = THREE.ReinhardToneMapping;
+            container.appendChild(renderer.domElement);
+
+            // POST PROCESSING (Soft White Bloom - No Neon)
+            const composer = new THREE.EffectComposer(renderer);
+            composer.addPass(new THREE.RenderPass(scene, camera));
+            const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+            bloomPass.threshold = 0; bloomPass.strength = 1.2; bloomPass.radius = 0.5;
+            composer.addPass(bloomPass);
+
+            // MONOLITH TUNNEL (White/Silver Emissive)
+            const boxGeom = new THREE.BoxGeometry(1, 1, 10);
+            const boxMat = new THREE.MeshStandardMaterial({ 
+                color: 0x222222, 
+                roughness: 0.1, 
+                metalness: 0.9,
+                emissive: 0xffffff, /* White Glow */
+                emissiveIntensity: 0.2
+            });
+            const count = 800;
+            const mesh = new THREE.InstancedMesh(boxGeom, boxMat, count);
             
-            document.body.style.height = `${document.querySelector('#main-container').scrollHeight}px`;
-            document.querySelector('#main-container').style.position = 'fixed';
-            document.querySelector('#main-container').style.width = '100%';
-            
-            smoothScroll();
+            const dummy = new THREE.Object3D();
+            for(let i=0; i<count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 5 + Math.random() * 15;
+                const z = (Math.random() - 0.5) * 200;
+                
+                dummy.position.set(Math.cos(angle)*radius, Math.sin(angle)*radius, z);
+                dummy.scale.set(0.2, 0.2, Math.random()*2 + 0.5);
+                dummy.rotation.z = Math.random() * Math.PI;
+                dummy.updateMatrix();
+                mesh.setMatrixAt(i, dummy.matrix);
+            }
+            scene.add(mesh);
+
+            // Lighting (Pure White)
+            const light = new THREE.PointLight(0xffffff, 2, 50);
+            scene.add(light);
+
+            // ANIMATION SEQUENCE
+            const tl = gsap.timeline();
+
+            // 1. Warp Speed (Hyperdrive)
+            tl.to(camera.position, { z: -150, duration: 3.5, ease: "power2.in" })
+              .to(mesh.material, { emissiveIntensity: 2, duration: 3 }, 0) // Lights brighten
+              
+            // 2. The Stop
+              .to(camera.position, { z: -160, duration: 1, ease: "expo.out" }, 3.5)
+              .to(mesh.material, { emissiveIntensity: 0, duration: 0.5 }, 3.5)
+              
+            // 3. Name Reveal
+              .to('.intro-title-wrapper', { opacity: 1, duration: 0.1 }, 3.6)
+              .from('.intro-name', { scale: 0.8, opacity:0, duration: 1.5, ease: "power2.out" }, 3.6)
+              
+            // 4. Exit
+              .to('#webgl-container', { opacity: 0, duration: 1, delay: 1, pointerEvents:'none' })
+              .to('.world-container', { opacity: 1, duration: 1 }, "-=0.5")
+              .to('nav', { opacity: 1, duration: 0.5 }, "-=0.8");
+
+            function animate() {
+                requestAnimationFrame(animate);
+                mesh.rotation.z += 0.002;
+                light.position.z = camera.position.z - 5;
+                composer.render();
+            }
+            animate();
 
             window.addEventListener('resize', () => {
-                document.body.style.height = `${document.querySelector('#main-container').scrollHeight}px`;
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                composer.setSize(window.innerWidth, window.innerHeight);
             });
-        }
+        };
 
-        // --- Scroll-triggered Animations ---
-        const allRevealElements = document.querySelectorAll('.fade-up, .reveal-mask');
+        initInterstellarWarp();
 
-        // Force the header elements to animate immediately on page load for reliability.
-        const headerElements = document.querySelectorAll('header .fade-up, header .reveal-mask');
-        setTimeout(() => {
-            headerElements.forEach(el => el.classList.add('visible'));
-        }, 100); // A small delay ensures rendering before animation starts.
-
-
-        // Set up the observer for all other elements that are NOT in the header.
-        const scrollObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
+        // --- 2. SMART LENS SYSTEM ---
+        const layerHuman = document.querySelector('.layer-human');
+        const cursorRing = document.querySelector('.cursor-ring');
+        const awardsSection = document.querySelector('#awards');
+        const contactSection = document.querySelector('#contact');
         
-        allRevealElements.forEach(el => {
-            if (!el.closest('header')) {
-                scrollObserver.observe(el);
+        let mouseX=window.innerWidth/2, mouseY=window.innerHeight/2;
+        let lensX=mouseX, lensY=mouseY;
+        let radius=220, targetRadius=220;
+        let lensActive=true;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.pageX; mouseY = e.pageY;
+            gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.1 });
+
+            if (awardsSection && contactSection) {
+                const awardsRect = awardsSection.getBoundingClientRect();
+                const contactRect = contactSection.getBoundingClientRect();
+                const inAwards = (e.clientY >= awardsRect.top && e.clientY <= awardsRect.bottom);
+                const inContact = (e.clientY >= contactRect.top && e.clientY <= contactRect.bottom);
+                if (inAwards || inContact) lensActive = false;
+                else lensActive = true;
             }
         });
-    };
+
+        function animateLens() {
+            lensX += (mouseX - lensX) * 0.12;
+            lensY += (mouseY - lensY) * 0.12;
+            
+            let effectiveTargetRadius = lensActive ? targetRadius : 0;
+            radius += (effectiveTargetRadius - radius) * 0.1;
+            
+            layerHuman.style.clipPath = `circle(${radius}px at ${lensX}px ${lensY}px)`;
+            
+            if (!lensActive) {
+                 cursorRing.style.width = "20px";
+                 cursorRing.style.height = "20px";
+                 cursorRing.style.mixBlendMode = "normal";
+                 cursorRing.style.backgroundColor = "transparent";
+                 cursorRing.style.border = "1px solid #fff";
+            } else {
+                 cursorRing.style.mixBlendMode = "difference";
+                 cursorRing.style.backgroundColor = "#fff";
+                 cursorRing.style.border = "none";
+            }
+            requestAnimationFrame(animateLens);
+        }
+        if(window.innerWidth > 900) animateLens();
+
+        const interactables = document.querySelectorAll('.project-row, .info-card, .award-card, a');
+        interactables.forEach(el => {
+            el.addEventListener('mouseenter', () => { if(lensActive) { targetRadius = 380; gsap.to(cursorRing, { width: 80, height: 80, duration: 0.3 }); } });
+            el.addEventListener('mouseleave', () => { if(lensActive) { targetRadius = 220; gsap.to(cursorRing, { width: 20, height: 20, duration: 0.3 }); } });
+        });
+
+        const lenis = new Lenis({ duration: 1.2, smooth: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from('.hero-title', { y: 100, opacity: 0, duration: 1.2, ease: "power4.out", delay: 5.5 });
+
     </script>
 </body>
 </html>
-
-
-
-
-
-
